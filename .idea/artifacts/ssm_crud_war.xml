@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="ssm-crud:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="ssm-crud_war.war">
+      <element id="javaee-facet-resources" facet="ssm-crud/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="ssm-crud" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>

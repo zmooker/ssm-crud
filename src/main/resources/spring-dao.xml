@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd ">
+<!--    =========================数据源的配置===========================================================-->
+    <!--1.关联数据库配置文件-->
+    <context:property-placeholder location="classpath:database.properties"></context:property-placeholder>
+    <!--2.连接池-->
+    <!--配置Druid数据库连接池，无需配置驱动，可以根据url检测出驱动-->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+          init-method="init" destroy-method="close">
+        <property name="url" value="${jdbc.url}"></property>
+        <property name="username" value="${jdbc.username}"></property>
+        <property name="password" value="${jdbc.password}"></property>
+    </bean>
+<!--   ==========================和mybatis的整合配置=====================================================================-->
+    <!--3.SqlSessionFactionBean-->
+    <!--声明SqlSessionFactionBean,创建SqlSessionFactory对象-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"></property>
+        <!--指定mybatis主配置文件位置-->
+        <property name="configLocation" value="classpath:mybatis-config.xml"></property>
+        <!--指定mabits，mapper文件的位置-->
+        <property name="mapperLocations" value="classpath:mapper/*.xml"></property>
+    </bean>
+    <!--注册Mapper扫描配置器,声明Mybatis的扫描器对象，创建Dao接口的实现类-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!--注入sqlSessionFactory-->
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+        <!--指定基本扫描包，Dao接口扫描包-->
+        <property name="basePackage" value="com.zmk.dao"></property>
+    </bean>
+
+    <!--配置一个可移植性批量的sqlSession-->
+    <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"></constructor-arg>
+        <constructor-arg name="executorType" value="BATCH"></constructor-arg>
+    </bean>
+
+
+</beans>
